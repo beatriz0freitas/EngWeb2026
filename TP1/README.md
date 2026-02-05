@@ -7,22 +7,15 @@
 ---
 
 ## Identificação do Autor
-<table>
-  <tr>
-    <td>
 
-**Nome:** Ana Beatriz Ribeiro Freitas  
-**Número:** a106853  
-**Curso:** Licenciatura em Engenharia Informática  
-**Instituição:** Universidade do Minho  
-**Unidade Curricular:** Engenharia Web  
+<p align="center">
+  <img src="bf.jpeg" alt="Fotografia do autor" width="400"/>
+</p>
 
-  </td>
-  <td align="center">
-    <img src="bf.jpeg" alt="Fotografia do autor" width="120"/>
-  </td>
-  </tr>
-</table>
+- **ID:** a106853  
+- **Nome:** Ana Beatriz Ribeiro Freitas  
+- **Curso:** Licenciatura em Engenharia Informática  
+
 ---
 
 ## Resumo
