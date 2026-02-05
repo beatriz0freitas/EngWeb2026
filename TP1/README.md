@@ -8,13 +8,13 @@
 
 ## Identificação do Autor
 
-<p align="center">
-  <img src="bf.jpeg" alt="Fotografia do autor" width="400"/>
-</p>
-
 - **ID:** a106853  
 - **Nome:** Ana Beatriz Ribeiro Freitas  
 - **Curso:** Licenciatura em Engenharia Informática  
+
+<p align="center">
+  <img src="../bf.jpeg" alt="Fotografia do autor" width="300"/>
+</p>
 
 ---
 
