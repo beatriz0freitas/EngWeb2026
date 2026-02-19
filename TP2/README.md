@@ -31,7 +31,7 @@
 #### Servidor Aplicacional
 
 - **server.js**
-  Servidor HTTP desenvolvido em Node.js que consome a API do `json-server` via `axios` e responde com tabelas HTML geradas dinamicamente.
+  Servidor HTTP desenvolvido em Node.js que consome a API do json-server via axios e responde com tabelas HTML geradas dinamicamente.
 
   ###### Serviços disponibilizados
 
@@ -58,13 +58,13 @@ Instalar dependências
   npm install -g json-server
 ```
 
-Terminal A — iniciar o servidor de dados
+Terminal A - iniciar o servidor de dados
 
 ```
 json-server --watch dataset_reparacoes.json 
 ```
 
-Terminal B — iniciar o servidor aplicacional
+Terminal B - iniciar o servidor aplicacional
 
 ```
 node server.js
