@@ -21,22 +21,36 @@
 ## Resumo
 
 * Criação de um json-server para disponibilizar o dataset da Escola de Música `db.json` através de uma API REST, garantindo a separação entre a camada de dados e a camada aplicacional.
-* Desenvolvimento de um servidor aplicacional em Node.js `server_escola_musica.js` responsável por consumir os dados do json-server através de `axios` e gerar respostas em HTML dinâmico a partir dos dados recebidos da API.
+* Desenvolvimento de uma API intermédia `api_escola.js` responsável por comunicar com o json-server e disponibilizar endpoints organizados para consumo. Este expôe os dados em formato JSON para consumo programático.
+* Desenvolvimento de um servidor aplicacional em Node.js `server_escola_musica.js` responsável por consumir a API e gerar respostas em HTML dinâmico a partir dos dados recebidos da API.
 * Implementação de uma estrutura modular, recorrendo ao módulo auxiliar `htmlUtils.js`, promovendo reutilização de código, organização e separação da lógica de apresentação.
 * Implementação de uma página inicial `/` com barra de navegação comum a todas as páginas, permitindo uma navegação intuitiva entre as diferentes secções da aplicação.
-* Implementação dos serviços `/alunos`, `/cursos` e `/instrumentos`.
+* Ambos os servidores respondem aos endpoints `/alunos`, `/cursos` e `/instrumentos`.
 
 ---
 
 ## Resultados - Ficheiros Desenvolvidos
 
+#### API REST
+
+- **api_escola.js**
+  Servidor HTTP desenvolvido em Node.js que consome o json-server via axios e expõe os dados em formato JSON. 
+
+  ###### Serviços disponibilizados - porta 3001
+
+  - `/alunos`
+    Lista de todos os alunos com os campos: ID, nome, data de nascimento, curso, ano e instrumento.
+  - `/cursos`
+    Lista de todos os cursos com os campos: ID, designação, duração e instrumento associado.
+  - `/instrumentos`
+    Lista de todos os instrumentos com os campos: ID e nome.
+
 #### Servidor Aplicacional
 
 - **server_escola_musica.js**
-  Servidor HTTP desenvolvido em Node.js que consome a API do `json-server` via `axios` e responde com tabelas HTML geradas dinamicamente. Inclui uma barra de navegação presente em todas as páginas para facilitar a navegação entre secções.
+  Servidor HTTP desenvolvido em Node.js que consome a API do json-server via axios e responde com tabelas HTML geradas dinamicamente. Inclui uma barra de navegação presente em todas as páginas para facilitar a navegação entre secções.
 
-  ###### Serviços disponibilizados
-
+  ###### Serviços disponibilizados - porta 7777
 
   - `/`
     Página inicial com links de navegação para as três secções disponíveis.
@@ -68,13 +82,19 @@ Instalar dependências
   npm install -g json-server
 ```
 
-Terminal A — iniciar o servidor de dados
+Terminal A - iniciar o servidor de dados
 
 ```
 json-server --watch db.json 
 ```
 
-Terminal B — iniciar o servidor aplicacional
+Terminal B - iniciar o servidor de dados
+
+```
+node api_escola.js
+```
+
+Terminal C - iniciar o servidor aplicacional
 
 ```
 node server_escola_musica.js
