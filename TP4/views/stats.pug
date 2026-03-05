@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  .w3-card-4
+    header.w3-container.w3-teal
+      h1 Estatísticas dos EMD
+
+    .w3-container.w3-padding-16
+      p Total de registos: 
+        strong= stats.total
+
+      h3 Por Género
+      each count, label in stats.porSexo
+        p
+          b= label + ': '
+          |  #{count}
+
+      h3 Por Resultado
+      each count, label in stats.porResultado
+        p
+          b= label + ': '
+          |  #{count}
+
+      h3 Por Federado
+      each count, label in stats.porFederado
+        p
+          b= label + ': '
+          |  #{count}
+
+      h3 Por Modalidade
+      each count, label in stats.porModalidade
+        p
+          b= label + ': '
+          |  #{count}
+
+      h3 Por Clube
+      each count, label in stats.porClube
+        p
+          b= label + ': '
+          |  #{count}
+
+    footer.w3-container.w3-light-grey.w3-padding-16
+      a.w3-btn.w3-grey(href="/emd") Voltar
