@@ -13,7 +13,7 @@
 - **Curso:** Licenciatura em Engenharia Informática
 
 <p align="center">
-  <img src="../bf.jpeg" alt="Fotografia do autor" width="300"/>
+  <img src="../.github/images/bf.jpeg" alt="Fotografia do autor" width="300"/>
 </p>
 
 ---
