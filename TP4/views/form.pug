@@ -12,10 +12,10 @@ block content
 
       p
         label Nome Próprio
-        input.w3-input.w3-border(type='text' name='primeiro' value= emd ? emd.nome.primeiro : '' required)
+        input.w3-input.w3-border(type='text' name='nome[primeiro]' value= emd ? emd.nome.primeiro : '' required)
       p
         label Apelido
-        input.w3-input.w3-border(type='text' name='ultimo' value= emd ? emd.nome['último'] : '' required)
+        input.w3-input.w3-border(type='text' name='nome[último]' value= emd ? emd.nome['último'] : '' required)
       p
         label Data do EMD
         input.w3-input.w3-border(type='date' name='dataEMD' value= emd ? emd.dataEMD : '' required)
