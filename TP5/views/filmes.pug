@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h2 #{title} (#{filmes.length})
+  table.w3-table-all.w3-margin-top
+    tr
+      th ID
+      th Título
+      th Ano
+      th # Géneros
+      th # Cast
+    each f in filmes
+      tr(onclick=`window.location='/filmes/${f.id}'` style="cursor:pointer;")
+        td= f.id
+        td= f.title
+        td= f.year
+        td= f.numGenres
+        td= f.numCast

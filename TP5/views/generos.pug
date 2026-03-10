@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h2 #{title} (#{generos.length})
+  table.w3-table-all.w3-margin-top
+    tr
+      th ID
+      th Género
+      th # Filmes
+    each g in generos
+      tr(onclick=`window.location='/generos/${g.id}'` style="cursor:pointer;")
+        td= g.id
+        td= g.name
+        td= g.numFilms

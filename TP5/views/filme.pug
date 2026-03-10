@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  .w3-card-4.w3-margin-top
+    header.w3-container.w3-blue
+      h2= filme.title
+    .w3-container.w3-padding-16
+      p
+        b ID:
+        |  #{filme.id}
+      p
+        b Ano:
+        |  #{filme.year}
+      p
+        b Géneros:
+      if filme.genres && filme.genres.length
+        ul
+          each g in filme.genres
+            li
+              a(href=`/generos/${g.id}`)= g.name
+      else
+        p.w3-text-grey Sem géneros registados.
+      p
+        b Cast:
+      if filme.cast && filme.cast.length
+        ul
+          each a in filme.cast
+            li
+              a(href=`/atores/${a.id}`)= a.name
+      else
+        p.w3-text-grey Sem atores registados.
+    footer.w3-container.w3-light-grey.w3-padding-16
+      a.w3-btn.w3-grey(href="/filmes") Voltar
