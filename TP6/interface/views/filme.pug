@@ -1,0 +1,40 @@
+extends layout
+
+block content
+  h1= filme.title
+  p
+    a(href='/filmes') Voltar à lista de filmes
+
+  table.w3-table-all
+    tbody
+      tr
+        th Id
+        td= filme.id
+      tr
+        th Título
+        td= filme.title
+      tr
+        th Ano
+        td= filme.year
+      tr
+        th Elenco (nº)
+        td= filme.cast ? filme.cast.length : 0
+      tr
+        th Géneros (nº)
+        td= filme.genres ? filme.genres.length : 0
+
+  h3 Elenco
+  if filme.cast && filme.cast.length
+    ul
+      each a in filme.cast
+        li #{a.id} - #{a.name}
+  else
+    p Sem elenco.
+
+  h3 Géneros
+  if filme.genres && filme.genres.length
+    ul
+      each g in filme.genres
+        li #{g.id} - #{g.name}
+  else
+    p Sem géneros.

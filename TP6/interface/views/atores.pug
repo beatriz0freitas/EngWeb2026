@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  h1 Lista de Atores
+  p
+    a(href='/') Voltar
+  table.w3-table-all
+    thead
+      tr.w3-teal
+        th Id
+        th Nome
+        th Nº filmes
+    tbody
+      each a in atores
+        tr
+          td
+            a(href=`/atores/${a.id}`)= a.id
+          td
+            a(href=`/atores/${a.id}`)= a.name
+          td= a.nFilmes

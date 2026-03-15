@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1 Lista de Géneros
+  p
+    a(href='/') Voltar
+  table.w3-table-all
+    thead
+      tr.w3-teal
+        th Id
+        th Designação
+        th Nº filmes
+    tbody
+      each g in generos
+        tr
+          td= g.id
+          td= g.name
+          td= g.nFilmes

@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1= ator.name
+  p
+    a(href='/atores') Voltar à lista de atores
+
+  table.w3-table-all
+    tbody
+      tr
+        th Id
+        td= ator.id
+      tr
+        th Nome
+        td= ator.name
+      tr
+        th Nº filmes
+        td= ator.films ? ator.films.length : 0
+
+  h3 Filmes
+  if ator.films && ator.films.length
+    ul
+      each f in ator.films
+        li
+          a(href=`/filmes/${f.id}`) #{f.id} - #{f.title}
+  else
+    p Sem filmes.
