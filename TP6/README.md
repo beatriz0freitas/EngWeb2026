@@ -32,51 +32,21 @@
 * A interface foi desenvolvida com Express + Pug (porta **7790**), consumindo a API com `axios` e transformando os dados em páginas HTML de listagem e detalhe.
 * A organização da interface privilegia navegação simples: tabelas para listas e páginas específicas para cada filme/ator/género.
 * Em termos de execução, toda a solução foi dockerizada com `docker-compose`, com três serviços integrados (`mongodb`, `api`, `interface`) a comunicar numa rede interna.
-* Esta abordagem melhora a reprodutibilidade do projeto: qualquer máquina com Docker consegue levantar o sistema completo com o mesmo comportamento.
-
----
-
-## Estrutura do Projeto (TP6)
-
-```text
-TP6/
-├── api_dados/
-│   ├── cinemaServer.js
-│   ├── script_db.py
-│   ├── db/
-│   │   ├── filmes.json
-│   │   ├── atores.json
-│   │   └── generos.json
-│   ├── mongo-init/
-│   │   └── import.sh
-│   ├── Dockerfile
-│   └── Dockerfile.mongo
-├── interface/
-│   ├── app_interface.js
-│   ├── Dockerfile.interface
-│   ├── public/
-│   │   └── stylesheets/style.css
-│   └── views/
-│       ├── layout.pug
-│       ├── filmes.pug
-│       ├── filme.pug
-│       ├── atores.pug
-│       ├── ator.pug
-│       ├── generos.pug
-│       └── error.pug
-├── cinema.json
-├── dataset_cinema.json
-└── docker-compose.yml
-```
+* Desta forma qualquer máquina com Docker consegue levantar o sistema completo com o mesmo comportamento.
 
 ---
 
 ## Resultados - Ficheiros Desenvolvidos
 
+## Notas
+
+- A API e o MongoDB comunicam por rede interna no `docker-compose`.
+- Se a API arrancar antes do MongoDB, a ligação é tentada novamente automaticamente.
+
 #### Manipulação de Dados
 
 - **api_dados/script_db.py**
-  Script python responsável por preparar os dados para a aplicação. Este remove ruído e valores pouco úteis no `cast`, cria IDs sequenciais, constrói relações entre entidades (filme ↔ ator, filme ↔ género). Exporta ainda três coleções independentes para import no MongoDB.
+  Script python responsável por preparar os dados para a aplicação. Este remove ruído e valores pouco úteis no `cast`, cria IDs sequenciais e constrói relações entre entidades. Exporta ainda três coleções independentes para import no MongoDB.
 - **api_dados/db/filmes.json**, **api_dados/db/atores.json**, **api_dados/db/generos.json**
   Ficheiros finais gerados pelo script. Estes ficheiros já estão no formato esperado pelo `mongoimport` e são usados diretamente pelo container do MongoDB.
 
@@ -112,17 +82,12 @@ TP6/
     Página de detalhe de um ator com lista de filmes.
   - `GET /generos`
     Tabela com todos os géneros (id, nome, nº filmes).
-  - `GET /`
-    Redireciona para `/filmes`.
 - **api_dados/Dockerfile**
   Define a imagem da API.
-
 - **api_dados/Dockerfile.mongo**
   Define a imagem do MongoDB com import automático dos dados.
-
 - **interface/Dockerfile.interface**
   Define a imagem da interface.
-
 - **docker-compose.yml**
   Orquestra os três serviços (`mongodb`, `api`, `interface`) na mesma rede.
 
@@ -179,14 +144,6 @@ docker logs interface_cinema
 docker logs api_cinema
 ```
 
-Para seguir logs em tempo real:
-
-```bash
-docker logs -f mongodb_cinema
-docker logs -f api_cinema
-docker logs -f interface_cinema
-```
-
 5) Parar os serviços:
 
 ```bash
@@ -198,68 +155,6 @@ docker compose down
 ```bash
 docker compose down -v
 ```
-
----
-
-## Execução sem Docker (opcional)
-
-### 1) Preparar dados
-
-```bash
-cd api_dados
-python3 script_db.py
-```
-
-### 2) Iniciar MongoDB local
-
-Garantir que existe um MongoDB local a correr na porta `27017`.
-
-### 3) Importar dados manualmente
-
-```bash
-mongoimport --db cinema --collection filmes  --drop --jsonArray --file db/filmes.json
-mongoimport --db cinema --collection atores  --drop --jsonArray --file db/atores.json
-mongoimport --db cinema --collection generos --drop --jsonArray --file db/generos.json
-```
-
-### 4) Iniciar API
-
-```bash
-cd api_dados
-npm install
-PORT=7789 MONGO_URL=mongodb://127.0.0.1:27017/cinema node cinemaServer.js
-```
-
-### 5) Iniciar Interface
-
-```bash
-cd interface
-npm install
-PORT=7790 API_URL=http://localhost:7789 node app_interface.js
-```
-
-Abrir: [http://localhost:7790/filmes](http://localhost:7790/filmes)
-
----
-
-## Validação rápida
-
-- Interface:
-  - [http://localhost:7790/filmes](http://localhost:7790/filmes)
-  - [http://localhost:7790/atores](http://localhost:7790/atores)
-  - [http://localhost:7790/generos](http://localhost:7790/generos)
-- API:
-  - [http://localhost:7789/filmes](http://localhost:7789/filmes)
-  - [http://localhost:7789/atores](http://localhost:7789/atores)
-  - [http://localhost:7789/generos](http://localhost:7789/generos)
-
----
-
-## Notas
-
-- A API e o MongoDB comunicam por rede interna no `docker-compose`.
-- Se a API arrancar antes do MongoDB, a ligação é tentada novamente automaticamente.
-- Em caso de erro de rota na interface, confirmar se o URL começa por `/filmes`, `/atores` ou `/generos`.
 
 ---
 
