@@ -1,0 +1,38 @@
+services:
+  mongodb:
+    build:
+      context: ./ex1/api_dados
+      dockerfile: Dockerfile.mongo
+    container_name: mongodb_repairs
+    networks:
+      - pubs-network
+
+  api:
+    build: 
+      context: ./ex1/api_dados
+      dockerfile: Dockerfile # O teu servidor de API minimalista
+    container_name: api_dados_repairs
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/autoRepair
+    depends_on:
+      - mongodb
+    networks:
+      - pubs-network
+
+  interface:
+    build:
+      context: ./ex2/interface
+      dockerfile: Dockerfile.interface # Dockerfile para este novo servidor
+    container_name: interface_web
+    ports:
+      - "16026:16026"
+    environment:
+      - API_URL=http://api_dados_repairs:16025
+    depends_on:
+      - api
+    networks:
+      - pubs-network
+
+networks:
+  pubs-network:
+    driver: bridge

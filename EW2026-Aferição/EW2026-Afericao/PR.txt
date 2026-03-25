@@ -1,0 +1,167 @@
+EngWeb2026 - Aferição 
+
+1. PERSISTÊNCIA DE DADOS
+Utilizei MongoDB como base de dados, com a seguinte configuração:
+  - Database:   autoRepair
+  - Collection: repairs
+
+O dataset original (dataset_reparacoes.json) foi processado através do script script_db.py, que realiza as seguintes operações de limpeza e normalização:
+  - Extrai o array do wrapper {"reparacoes": [...]}
+  - Recalcula o campo nr_intervencoes para garantir consistência com o array
+  - Remove espaços extra em todos os campos de texto
+  - Normaliza as matrículas para maiúsculas (ex: 4-wn-31 → 4-WN-31)
+  - Capitaliza os nomes das marcas (ex: cadillac → Cadillac)
+  - Normaliza os códigos de intervenção para maiúsculas (ex: r015 → R015)
+
+O ficheiro resultante chama-se db_reparacoes.json e é o ficheiro importado para o MongoDB.
+
+
+2. SETUP DA BASE DE DADOS
+A importação é feita automaticamente no arranque do container MongoDB, através do Dockerfile.mongo + mongo-init/import.sh.
+
+Para importar manualmente (sem Docker):
+
+  1. Correr o script de preparação do dataset:
+     python3 script_db.py
+
+  2. Copiar o ficheiro para o container:
+     docker cp api_dados/db_reparacoes.json mongoEW:/tmp
+
+  3. Importar para o MongoDB:
+     docker exec -it mongoEW mongoimport -d autoRepair -c repairs /tmp/db_reparacoes.json --jsonArray
+
+  4. Verificar a importação:
+     docker exec -it mongoEW mongosh
+     use autoRepair
+
+3. QUERIES MONGODB (respostas ao exercício 1.2)
+As queries encontram-se no ficheiro queries.txt na raiz do repositório.
+
+  Q1 - Total de automóveis reparados:
+       db.repairs.countDocuments()
+
+  Q2 - Total de Cadillacs reparados:
+       db.repairs.countDocuments({ "viatura.marca": "Cadillac" })
+
+  Q3 - Marcas únicas ordenadas alfabeticamente:
+       db.repairs.distinct("viatura.marca").sort()
+
+  Q4 - Distribuição por tipo de reparação:
+       db.repairs.aggregate([
+         { $unwind: "$intervencoes" },
+         { $group: { _id: { codigo: "$intervencoes.codigo",
+                            nome: "$intervencoes.nome" },
+                     total: { $sum: 1 } } },
+         { $sort: { "_id.codigo": 1 } }
+       ])
+
+  Q5 - Distribuição de clientes por ano:
+       db.repairs.aggregate([
+         { $group: { _id: { $year: { $dateFromString: { dateString: "$data" } } },
+                     total: { $sum: 1 } } },
+         { $sort: { "_id": 1 } }
+       ])
+
+4. EXERCÍCIO 1 — API DE DADOS (porta 16025)
+Aplicação Node.js com Express + Mongoose.
+Ficheiro principal: api_dados/repairsServer.js
+
+Rotas implementadas:
+
+  GET  /repairs                → lista todos os registos
+  GET  /repairs?ano=YYYY       → filtra por ano
+  GET  /repairs?marca=VRUM     → filtra por marca
+  GET  /repairs/matriculas     → lista de matrículas únicas e ordenadas
+  GET  /repairs/interv         → lista de intervenções (código, nome, descrição)
+  GET  /repairs/:id            → registo por id
+  POST /repairs                → adiciona novo registo
+  DELETE /repairs/:id          → elimina registo por id
+
+Boas práticas aplicadas:
+  - Logger em todas as rotas
+  - Reconnect automático ao MongoDB (retry a cada 5s)
+  - Guard 503 se a BD não estiver disponível
+  - Rotas especiais definidas antes de /:id para evitar conflitos
+
+Para correr localmente:
+  cd api_dados
+  npm install
+  node repairsServer.js
+
+5. EXERCÍCIO 2 — INTERFACE WEB (porta 16026)
+Aplicação Node.js com Express + Pug + W3.CSS.
+Ficheiro principal: interface/app_interface.js
+A interface comunica exclusivamente com a API — não acede directamente à BD.
+
+Páginas disponíveis:
+
+  http://localhost:16026/
+    → Página principal com tabela de todos os registos
+       (campos: _id, data, nome, matrícula, marca, nº intervenções)
+       _id é link para a página do registo
+       marca é link para a página da marca
+
+  http://localhost:16026/:id
+    → Página de detalhe do registo
+       (detectado por ser um ObjectId de 24 caracteres hex)
+       Mostra todos os campos + lista de intervenções
+       Link para voltar à página principal
+
+  http://localhost:16026/:marca
+    → Página da marca
+       (qualquer parâmetro que não seja ObjectId é tratado como marca)
+       Mostra nome da marca, modelos intervencionados e tabela de reparações
+
+Views Pug:
+  - layout.pug   → base comum com header e W3.CSS
+  - index.pug    → página principal (tabela)
+  - repair.pug   → detalhe do registo
+  - marca.pug    → página da marca
+  - error.pug    → página de erro
+
+Para correr localmente:
+  cd interface
+  npm install
+  node app_interface.js
+
+6. DOCKERIZAÇÃO
+Cada serviço tem o seu Dockerfile:
+  - api_dados/Dockerfile          → imagem da API (Node 22)
+  - api_dados/Dockerfile.mongo    → imagem MongoDB com import automático
+  - interface/Dockerfile.interface → imagem da interface (Node 22)
+
+O Dockerfile.mongo copia o db_reparacoes.json e o import.sh para
+/docker-entrypoint-initdb.d/, garantindo que o MongoDB importa os dados
+automaticamente na primeira inicialização, sem passos manuais.
+
+O docker-compose.yml orquestra os 3 serviços numa rede interna (ew2026-network):
+  - mongodb    → sem portas expostas (apenas acessível internamente)
+  - api        → sem portas expostas (apenas acessível internamente)
+  - interface  → porta 16026 exposta para o browser
+
+
+7. INSTRUÇÕES DE EXECUÇÃO
+  1. Preparar o dataset:
+     cd api_dados
+     python3 script_db.py
+
+  2. Arrancar tudo com Docker Compose (na raiz do projecto):
+     cd EW2026-Afericao
+     docker compose up --build
+
+  3. Aceder no browser:
+     http://localhost:16026
+
+  4. Ver logs:
+     docker logs mongodb_repairs
+     docker logs api_repairs
+     docker logs interface_repairs
+
+  5. Parar os serviços:
+     docker compose down
+
+  6. Parar e apagar volumes (reset completo):
+     docker compose down -v
+
+=======================================================
+Universidade do Minho — Escola de Engenharia

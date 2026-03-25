@@ -1,0 +1,51 @@
+extends layout
+
+block content
+  h1= repair.nome
+  p
+    a.w3-button.w3-teal(href='/') ← Voltar
+
+  h3 Dados do Cliente
+  table.w3-table-all
+    tbody
+      tr
+        th ID
+        td= repair._id
+      tr
+        th Nome
+        td= repair.nome
+      tr
+        th NIF
+        td= repair.nif
+      tr
+        th Data
+        td= repair.data
+
+  h3 Viatura
+  table.w3-table-all
+    tbody
+      tr
+        th Marca
+        td
+          a(href=`/${encodeURIComponent(repair.viatura.marca)}`)= repair.viatura.marca
+      tr
+        th Modelo
+        td= repair.viatura.modelo
+      tr
+        th Matrícula
+        td= repair.viatura.matricula
+
+  h3 Intervenções (#{repair.nr_intervencoes})
+  table.w3-table-all.w3-hoverable
+    thead
+      tr.w3-teal
+        th Código
+        th Nome
+        th Descrição
+    tbody
+      each i in repair.intervencoes
+        tr
+          td
+            strong= i.codigo
+          td= i.nome
+          td= i.descricao

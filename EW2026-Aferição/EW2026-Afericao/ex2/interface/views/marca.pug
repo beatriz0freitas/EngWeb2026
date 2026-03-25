@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  h1 Marca: #{marca}
+  p
+    a.w3-button.w3-teal(href='/') ← Voltar
+  p Total de reparações:
+    strong  #{repairs.length}
+
+  h3 Modelos intervencionados
+  .w3-panel
+    each m in modelos
+      span.w3-tag.w3-blue-grey.w3-margin-right= m
+
+  h3 🔧 Lista de Reparações
+  table.w3-table-all.w3-hoverable
+    thead
+      tr.w3-teal
+        th ID
+        th Data
+        th Cliente
+        th Matrícula
+        th Marca
+        th Intervenções
+    tbody
+      each r in repairs
+        tr
+          td
+            a(href=`/${r._id}`)= r._id
+          td= r.data
+          td= r.nome
+          td= r.viatura.matricula
+          td= r.viatura.marca
+          td
+            span.w3-tag.w3-teal= r.nr_intervencoes

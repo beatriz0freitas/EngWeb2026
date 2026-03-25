@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  h1 Reparações de Automóveis
+  p Total de registos:
+    strong  #{repairs.length}
+
+  table.w3-table-all.w3-hoverable
+    thead
+      tr.w3-teal
+        th ID
+        th Data
+        th Cliente
+        th Matrícula
+        th Marca
+        th Intervenções
+    tbody
+      each r in repairs
+        tr
+          td
+            a(href=`/${r._id}`)= r._id
+          td= r.data
+          td= r.nome
+          td= r.viatura.matricula
+          td
+            a(href=`/${encodeURIComponent(r.viatura.marca)}`)= r.viatura.marca
+          td
+            span.w3-tag.w3-teal= r.nr_intervencoes
