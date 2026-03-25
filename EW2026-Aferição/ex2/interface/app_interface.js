@@ -26,8 +26,8 @@ app.get('/', (req, res) => {
 // GET /:param — id começa com dígito, marca começa com letra maiúscula
 app.get('/:param', (req, res) => {
   const param = req.params.param
-  const isId = /^\d/.test(param)
-
+  const isId = /^[a-fA-F0-9]{24}$/.test(param)
+  
   if (isId) {
     axios.get(`${API_URL}/repairs/${param}`)
       .then(({ data }) => res.render('repair', { title: 'Detalhe', repair: data }))

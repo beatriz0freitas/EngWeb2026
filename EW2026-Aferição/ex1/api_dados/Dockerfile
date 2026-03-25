@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expor a porta definida no teu código
-EXPOSE 7789
+EXPOSE 16025
 
 # Comando para iniciar (ajusta se o nome do ficheiro for diferente)
 CMD ["node", "repairsServer.js"]

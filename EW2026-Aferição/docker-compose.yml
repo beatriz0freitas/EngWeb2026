@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile.mongo
     container_name: mongodb_repairs
     networks:
-      - pubs-network
+      - ew2026-network
 
   api:
     build: 
@@ -19,7 +19,7 @@ services:
     depends_on:
       - mongodb
     networks:
-      - pubs-network
+      - ew2026-network
 
   interface:
     build:
@@ -33,8 +33,8 @@ services:
     depends_on:
       - api
     networks:
-      - pubs-network
+      - ew2026-network
 
 networks:
-  pubs-network:
+  ew2026-network:
     driver: bridge

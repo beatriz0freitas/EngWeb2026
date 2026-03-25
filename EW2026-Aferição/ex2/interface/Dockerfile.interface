@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expor a porta definida no teu código
-EXPOSE 7790
+EXPOSE 16026
 
 # Comando para iniciar
 CMD ["node", "app_interface.js"]
