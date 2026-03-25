@@ -12,7 +12,7 @@ block content
     each m in modelos
       span.w3-tag.w3-blue-grey.w3-margin-right= m
 
-  h3 🔧 Lista de Reparações
+  h3 Lista de Reparações
   table.w3-table-all.w3-hoverable
     thead
       tr.w3-teal
@@ -31,5 +31,4 @@ block content
           td= r.nome
           td= r.viatura.matricula
           td= r.viatura.marca
-          td
-            span.w3-tag.w3-teal= r.nr_intervencoes
+          td= r.nr_intervencoes
